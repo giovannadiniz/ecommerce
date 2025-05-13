@@ -1,0 +1,7 @@
+CREATE TABLE IF NOT EXISTS trade.coupons (
+    id SERIAL PRIMARY KEY,
+    code VARCHAR(255) NOT NULL UNIQUE,
+    discount DECIMAL(10, 2) NOT NULL,
+    expiration_date TIMESTAMP NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
