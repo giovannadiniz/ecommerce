@@ -12,7 +12,6 @@ public class UserResponse {
     private String username;
     private String email;
     private String phone;
-    private LocalDateTime createdAt;
 
     public Long getId() {
         return id;
@@ -20,14 +19,6 @@ public class UserResponse {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
     }
 
     public String getPhone() {

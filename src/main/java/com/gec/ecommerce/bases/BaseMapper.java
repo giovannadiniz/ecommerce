@@ -1,28 +1,24 @@
 package com.gec.ecommerce.bases;
 
-import org.mapstruct.Mapper;
-import org.mapstruct.MappingTarget;
 
-import java.util.List;
 
-@Mapper
-public interface BaseMapper<Entidade, DataTransferObject, Requisicao, Resposta> {
+public abstract class BaseMapper<Entity, EntityFilter, EntityShallowDto, EntityRequest, EntityResponse> {
 
-    DataTransferObject converterParaDataTransferObject(Entidade entidade);
+    public abstract Entity filterToEntity(EntityFilter filter);
 
-    Entidade converterParaEntidade(DataTransferObject dataTransferObject);
+    public abstract EntityFilter entityToFilter(Entity entity);
 
-    Resposta converterEntidadeParaResposta(Entidade entidade);
+    public abstract EntityFilter shallowDtoToFilter(EntityShallowDto entityShallowDto);
 
-    Entidade converterRequisicaoParaEntidade(Requisicao requisicao);
+    public abstract Entity shallowDtoToEntity(EntityShallowDto entityShallowDto);
 
-    List<DataTransferObject> converterListaEntidadesParaListaDataTransferObjects(List<Entidade> entidades);
+    public abstract EntityShallowDto entityToShallowDto(Entity entity);
 
-    List<Entidade> converterListaDataTransferObjectsParaListaEntidades(List<DataTransferObject> dataTransferObjects);
+    public abstract Entity requestToEntity(EntityRequest request);
 
-    List<Resposta> converterListaEntidadesParaListaRespostas(List<Entidade> entidades);
+    public abstract EntityRequest entityToRequest(Entity entity);
 
-    void atualizarEntidadeComDataTransferObject(DataTransferObject dataTransferObject, @MappingTarget Entidade entidade);
+    public abstract Entity responseToEntity(EntityResponse response);
 
-    void atualizarEntidadeComRequisicao(Requisicao requisicao, @MappingTarget Entidade entidade);
+    public abstract EntityResponse entityToResponse(Entity entity);
 }

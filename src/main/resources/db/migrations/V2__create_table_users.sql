@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS security.users (
-    id SERIAL PRIMARY KEY,
+    id bigserial PRIMARY KEY,
     fullname VARCHAR(100) NOT NULL,
     username VARCHAR(50) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,

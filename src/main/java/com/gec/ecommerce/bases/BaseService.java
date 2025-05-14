@@ -1,18 +1,41 @@
 package com.gec.ecommerce.bases;
 
-import jakarta.persistence.EntityNotFoundException;
+
+import org.flywaydb.core.api.logging.Log;
+import org.flywaydb.core.api.logging.LogFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 import java.util.Optional;
 
-public abstract class BaseService<T, ID, R, S> {
-    public abstract List<R> findAll();
+public abstract class BaseService<Entity, EntityFilter> {
 
-    public abstract Optional<R> findById(ID id);
+    protected final Log logger = LogFactory.getLog(getClass());
 
-    public abstract R save(S entity);
+    public abstract JpaRepository<Entity, Long> getRepository();
 
-    public abstract R update(ID id, S entity);
+    public void save(Entity entity) {
+        getRepository().save(entity);
+    }
 
-    public abstract void delete(ID id) throws EntityNotFoundException;
+    public Entity saveWithReturn(Entity entity) {
+        return getRepository().save(entity);
+    }
+
+    public void delete(Long id) {
+        Optional<Entity> entity = getRepository().findById(id);
+        entity.ifPresentOrElse(
+                getRepository()::delete,
+                () -> {
+                    throw new RuntimeException("Couldn't find ID parameter: " + id);
+                }
+        );
+    }
+
+    public abstract Page<Entity> findAll(int page, int size, EntityFilter filter);
+
+    public Optional<Entity> findById(Long id) {
+        return getRepository().findById(id);
+}
 }
