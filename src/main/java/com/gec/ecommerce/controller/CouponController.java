@@ -36,11 +36,11 @@ public class CouponController extends BaseController<Coupon, CouponFilter, Coupo
         return this.couponService;
     }
 
-//    @Override
-//    public ResponseEntity<BasePaginatedResponse<CouponShallowDto>> listAll(Integer page, Integer size, CouponFilter couponFilter, HttpServletRequest request) {
-//
-//        return ResponseEntity.ok().body(this.couponService.listAll(page,size,couponFilter,request));
-//    }
+    @Override
+    public ResponseEntity<BasePaginatedResponse<CouponShallowDto>> listAll(Integer page, Integer size, CouponFilter couponFilter, HttpServletRequest request) {
+
+        return ResponseEntity.ok().body(this.couponService.listAll(page,size,couponFilter,request));
+    }
 
     @Override
     public ResponseEntity<CouponResponse> findEntityById(Long id) {

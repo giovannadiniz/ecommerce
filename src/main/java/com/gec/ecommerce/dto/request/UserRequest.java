@@ -1,8 +1,7 @@
 package com.gec.ecommerce.dto.request;
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
+
 
 public class UserRequest {
     @NotBlank(message = "Nome completo é obrigatório")

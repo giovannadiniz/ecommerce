@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 
 public record CouponFilter(
         Long id,
-        LocalDateTime creationDate,
+        LocalDateTime createdAt,
         String code,
         BigDecimal discount,
         LocalDateTime expirationDate

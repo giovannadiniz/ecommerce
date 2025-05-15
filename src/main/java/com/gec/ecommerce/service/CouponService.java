@@ -19,11 +19,12 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
+import jakarta.persistence.criteria.Predicate;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Predicate;
+
 
 @Service
 public class CouponService extends BaseService<Coupon, CouponFilter> {
@@ -51,39 +52,40 @@ public class CouponService extends BaseService<Coupon, CouponFilter> {
     }
 
 
-//    public BasePaginatedResponse<CouponShallowDto> listAll(Integer page, Integer size, CouponFilter couponFilter, HttpServletRequest request){
-//        UriComponentsBuilder uri = UriComponentsBuilder.fromPath(request.getServletPath()).query(request.getQueryString());
-//
-//        Page<Coupon> couponPage = findAll(page,size,couponFilter);
-//
-//        return new BasePaginatedResponse<>(couponPage.map(couponMapper::entityToShallowDto),uri);
-//    }
+    public BasePaginatedResponse<CouponShallowDto> listAll(Integer page, Integer size, CouponFilter couponFilter, HttpServletRequest request){
+        UriComponentsBuilder uri = UriComponentsBuilder.fromPath(request.getServletPath()).query(request.getQueryString());
+
+        Page<Coupon> couponPage = findAll(page,size,couponFilter);
+
+        return new BasePaginatedResponse<>(couponPage.map(couponMapper::entityToShallowDto),uri);
+    }
 
 
-//    @Override
-//    public Page<Coupon> findAll(int page, int size, CouponFilter couponFilter) {
-//        Pageable pageable = Pageable.ofSize(size).withPage(page);
-//
-//        Specification<Coupon> spec = (root, query, cb) -> {
-//            List<Predicate> predicates = new ArrayList<>();
-//
-//            if (couponFilter.code() != null)
-//                predicates.add(cb.equal(root.get("code"), couponFilter.code()));
-//            if (couponFilter.creationDate() != null)
-//                predicates.add(cb.equal(root.get("createdAt"), couponFilter.createdAt()));
-//            if (couponFilter.discount() != null)
-//                predicates.add(cb.equal(root.get("amount"), couponFilter.discount()));
-//
-//            return cb.and(predicates.toArray(new Predicate[0]));
-//        };
-//
-//        return couponRepository.findAll(spec, pageable);
-//    }
+    @Override
+    public Page<Coupon> findAll(int page, int size, CouponFilter couponFilter) {
+        Pageable pageable = Pageable.ofSize(size).withPage(page);
+
+        Specification<Coupon> spec = (root, query, cb) -> {
+            List<Predicate> predicates = new ArrayList<>();
+
+            if (couponFilter.code() != null)
+                predicates.add(cb.equal(root.get("code"), couponFilter.code()));
+            if (couponFilter.createdAt() != null)
+                predicates.add(cb.equal(root.get("createdAt"), couponFilter.createdAt()));
+            if (couponFilter.discount() != null)
+                predicates.add(cb.equal(root.get("amount"), couponFilter.discount()));
+
+            return cb.and(predicates.toArray(new Predicate[0]));
+        };
+
+        return couponRepository.findAll(spec, pageable);
+    }
 
     public CouponResponse findCouponById(Long id) {
         Coupon coupon = findById(id).orElseThrow(() -> new CouponNotFoundException(id));
         return couponMapper.entityToResponse(coupon);
     }
+
 
     @Transactional
     public CouponResponse update(Long id, CouponRequest request) {
@@ -99,6 +101,7 @@ public class CouponService extends BaseService<Coupon, CouponFilter> {
         return couponMapper.entityToResponse(updatedCoupon);
     }
 
+
     @Transactional
     public void delete(Long id) {
         Optional<Coupon> coupon = findById(id);
@@ -106,10 +109,5 @@ public class CouponService extends BaseService<Coupon, CouponFilter> {
                 couponRepository::delete,
                 () -> { throw new CouponNotFoundException(id); }
                 );
-    }
-
-    @Override
-    public Page<Coupon> findAll(int page, int size, CouponFilter couponFilter) {
-        return null;
     }
 }

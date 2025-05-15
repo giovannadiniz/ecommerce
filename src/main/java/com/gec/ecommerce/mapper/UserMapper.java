@@ -11,5 +11,5 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Mapper(componentModel = "spring")
-public abstract class UserMapper extends BaseMapper<User, UserFilter, UserShallowDto, UserRequest, UserResponse> {
-}
+public abstract class UserMapper extends BaseMapper<User, UserFilter, UserShallowDto, UserRequest, UserResponse>
+{}

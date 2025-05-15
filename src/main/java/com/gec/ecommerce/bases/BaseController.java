@@ -12,13 +12,13 @@ public abstract class BaseController<Entity, Filter, ShallowDto, EntityRequest, 
 
     protected abstract EntityService getEntityService();
 
-//    @PostMapping(params = {"page", "size"})
-//    abstract public ResponseEntity<BasePaginatedResponse<ShallowDto>> listAll(
-//            @RequestParam(defaultValue = "0", required = false, name = "page") Integer page,
-//            @RequestParam(defaultValue = "10", required = false, name = "size") Integer size,
-//            @RequestBody Filter filter,
-//            HttpServletRequest request
-//    );
+    @PostMapping(params = {"page", "size"})
+    abstract public ResponseEntity<BasePaginatedResponse<ShallowDto>> listAll(
+            @RequestParam(defaultValue = "0", required = false, name = "page") Integer page,
+            @RequestParam(defaultValue = "10", required = false, name = "size") Integer size,
+            @RequestBody Filter filter,
+            HttpServletRequest request
+    );
 
     @GetMapping(value = "/{id}")
     abstract public ResponseEntity<EntityResponse> findEntityById(@PathVariable("id") Long id);
