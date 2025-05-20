@@ -5,5 +5,4 @@ public record UserFilter(
         String username,
         String email,
         String phone
-) {
-}
+) { }

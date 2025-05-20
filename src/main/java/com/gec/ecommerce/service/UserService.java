@@ -8,6 +8,7 @@ import com.gec.ecommerce.dto.CouponShallowDto;
 import com.gec.ecommerce.dto.UserShallowDto;
 import com.gec.ecommerce.dto.request.UserRequest;
 import com.gec.ecommerce.dto.response.UserResponse;
+import com.gec.ecommerce.exception.CouponNotFoundException;
 import com.gec.ecommerce.filter.CouponFilter;
 import com.gec.ecommerce.filter.UserFilter;
 import com.gec.ecommerce.mapper.CouponMapper;
@@ -94,16 +95,16 @@ public class UserService extends BaseService<User, UserFilter> {
 
     @Transactional
     public UserResponse update(Long id, UserRequest userRequest) {
-        User existingUser = findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+        User existingUser = userRepository.findById(id)
+                .orElseThrow(() -> new CouponNotFoundException(id));
 
-        var updatedUser = userMapper.requestToEntity(userRequest);
+        var userUpdated = userMapper.requestToEntity(userRequest);
 
-        BeanUtils.copyProperties(updatedUser, existingUser);
+        BeanUtils.copyProperties(userUpdated, existingUser, "id");
 
-        var userUpdated = userRepository.save(existingUser);
+        var updatedUser = userRepository.save(existingUser);
 
-        return userMapper.entityToResponse(userUpdated);
+        return userMapper.entityToResponse(updatedUser);
     }
 
     @Transactional

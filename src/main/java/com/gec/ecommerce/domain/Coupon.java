@@ -19,10 +19,10 @@ public class Coupon {
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal discount;
 
-    @Column(name = "expiration_date", nullable = false)
+    @Column(name = "expiration_date")
     private LocalDateTime expirationDate;
 
-    @Column(name = "created_at", updatable = false, insertable = false)
+    @Column(name = "created_at")
     private LocalDateTime createdAt;
 
 

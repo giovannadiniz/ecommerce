@@ -63,5 +63,4 @@ public class CouponController extends BaseController<Coupon, CouponFilter, Coupo
         couponService.delete(id);
         return ResponseEntity.ok().build();
     }
-
 }
