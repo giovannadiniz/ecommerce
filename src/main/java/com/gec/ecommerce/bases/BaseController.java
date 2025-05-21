@@ -6,7 +6,6 @@ import org.springframework.http.ResponseEntity;
 //import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 public abstract class BaseController<Entity, Filter, ShallowDto, EntityRequest, EntityResponse, EntityService extends BaseService<Entity, Filter>> {
 
