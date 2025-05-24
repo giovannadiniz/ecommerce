@@ -37,10 +37,10 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity login(@RequestBody @Valid AuthRequest authRequest) {
-        UsernamePasswordAuthenticationToken usernamePassword =
-                new UsernamePasswordAuthenticationToken(authRequest.username(), authRequest.password());        var auth = this.authenticationManager.authenticate(usernamePassword);
+        var usernamePassword = new UsernamePasswordAuthenticationToken(authRequest.username(), authRequest.password());
+        var auth = this.authenticationManager.authenticate(usernamePassword);
 
-        var token = tokenService.generateToken((User )auth.getPrincipal());
+        var token = tokenService.generateToken((User) auth.getPrincipal());
 
         return ResponseEntity.ok(new AuthResponse(token));
     }
@@ -51,7 +51,6 @@ public class AuthController {
             return ResponseEntity.badRequest().build();
         }
 
-        // Use o PasswordEncoder injetado, não crie uma nova instância
         String encryptedPassword = this.passwordEncoder.encode(userRequest.password());
         User newUser = new User(
                 userRequest.fullname(),
