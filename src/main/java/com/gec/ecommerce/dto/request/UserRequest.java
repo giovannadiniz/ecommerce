@@ -1,5 +1,6 @@
 package com.gec.ecommerce.dto.request;
 
+import com.gec.ecommerce.dto.UserRole;
 import jakarta.validation.constraints.*;
 
 
@@ -23,6 +24,8 @@ public record UserRequest (
 
     @NotBlank(message = "Telefone é obrigatório")
     @Size(min = 11, max = 11, message = "O número de telefone deve ter 11 dígitos")
-    String phone
+    String phone,
+
+    UserRole role
 ){}
 

@@ -24,6 +24,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -34,16 +37,16 @@ import java.util.Optional;
 
 
 @Service
-public class UserService extends BaseService<User, UserFilter> {
+public class UserService extends BaseService <User, UserFilter> implements UserDetailsService {
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
-    private final PasswordEncoder passwordEncoder;
+//    private final PasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository userRepository, UserMapper userMapper, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository, UserMapper userMapper) {
         this.userRepository = userRepository;
         this.userMapper = userMapper;
-        this.passwordEncoder = passwordEncoder;
+//        this.passwordEncoder = passwordEncoder;
     }
 
 
@@ -57,7 +60,7 @@ public class UserService extends BaseService<User, UserFilter> {
     @Transactional
     @Override
     public User saveWithReturn(User user) {
-        user.setPassword(passwordEncoder.encode(user.getPassword())); // criptografando a senha
+//        user.setPassword(passwordEncoder.encode(user.getPassword()));
         return getRepository().save(user);
     }
 
@@ -118,4 +121,8 @@ public class UserService extends BaseService<User, UserFilter> {
         );
     }
 
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        return userRepository.findByUsername(username);
+    }
 }
