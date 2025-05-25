@@ -47,7 +47,6 @@ public class SecurityConfiguration {
         return authenticationConfiguration.getAuthenticationManager();
     }
 
-
 //    public AuthenticationManager authenticationManager(HttpSecurity httpSecurity) throws Exception {
 //        AuthenticationManagerBuilder authenticationManagerBuilder =
 //                httpSecurity.getSharedObject(AuthenticationManagerBuilder.class);
