@@ -37,7 +37,7 @@ import java.util.Optional;
 
 
 @Service
-public class UserService extends BaseService <User, UserFilter> implements UserDetailsService {
+public class UserService extends BaseService <User, UserFilter> {
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
@@ -121,8 +121,5 @@ public class UserService extends BaseService <User, UserFilter> implements UserD
         );
     }
 
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return userRepository.findByUsername(username);
-    }
+
 }

@@ -16,7 +16,6 @@ import java.util.List;
 @Entity
 @Table(name = "users", schema = "security")
 @Data
-@NoArgsConstructor(force = true)
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")
 public class User implements UserDetails {
@@ -60,14 +59,9 @@ public class User implements UserDetails {
 //    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 //    private List<RabbitConnectionDetails.Address> addresses = new ArrayList<>();
 
-//    public User(String fullname, String username, String password, String email, UserRole role, String phone) {
-//        this.fullname = fullname;
-//        this.username = username;
-//        this.password = password;
-//        this.email = email;
-//        this.role = role;
-//        this.phone = phone;
-//    }
+    public User(){
+
+    }
 
     // Construtor personalizado (opcional, pode ser removido se usar @Builder)
     public User(String fullname, String username, String password, String email, UserRole role, String phone) {
