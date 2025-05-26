@@ -1,5 +1,7 @@
 package com.gec.ecommerce.dto.response;
 
+import com.gec.ecommerce.domain.Product;
+
 import java.math.BigDecimal;
 
 public class ProductResponse {
@@ -8,6 +10,14 @@ public class ProductResponse {
     private BigDecimal price;
     private int quantity;
     private boolean active;
+
+    public ProductResponse(Product product) {
+        this.name = product.getName();
+        this.description = product.getDescription();
+        this.price = product.getPrice();
+        this.quantity = product.getQuantity();
+        this.active = product.isActive();
+    }
 
     public String getName() {
         return name;

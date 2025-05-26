@@ -27,6 +27,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductService extends BaseService<Product, ProductFilter> {
@@ -48,6 +49,12 @@ public class ProductService extends BaseService<Product, ProductFilter> {
     @Override
     public Product saveWithReturn(Product product) {
         return getRepository().save(product);
+    }
+
+    public List<ProductResponse> pesquisarProducts() {
+        List<Product> products = productRepository.findAll();
+        return products.stream().map(ProductResponse::new)
+                .collect(Collectors.toList());
     }
 
     public BasePaginatedResponse<ProductShallowDto> listAll(Integer page, Integer size, ProductFilter productFilter, HttpServletRequest request){

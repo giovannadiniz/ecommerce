@@ -11,10 +11,11 @@ import com.gec.ecommerce.mapper.ProductMapper;
 import com.gec.ecommerce.service.ProductService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "/product")
@@ -37,6 +38,12 @@ public class ProductController extends BaseController<Product, ProductFilter, Pr
     @Override
     public ResponseEntity<BasePaginatedResponse<ProductShallowDto>> listAll(Integer page, Integer size, ProductFilter productFilter, HttpServletRequest request) {
         return ResponseEntity.ok().body(this.productService.listAll(page, size, productFilter, request));
+    }
+
+    @GetMapping
+    @ResponseStatus(HttpStatus.OK)
+    public List<ProductResponse> findProducts() {
+        return productService.pesquisarProducts();
     }
 
     @Override
