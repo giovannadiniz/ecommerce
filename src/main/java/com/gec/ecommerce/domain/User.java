@@ -50,14 +50,14 @@ public class User implements UserDetails {
     protected void onCreate() {
         createdAt = LocalDateTime.now();
     }
-//    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-//    private List<Order> orders = new ArrayList<>();
 
+    // Relacionamento um-para-um com Cart
 //    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 //    private Cart cart;
-
+//
+//    // Relacionamento um-para-muitos com Orders
 //    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-//    private List<RabbitConnectionDetails.Address> addresses = new ArrayList<>();
+//    private List<Order> orders = new ArrayList<>();
 
     public User(){
 

@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS trade.adresses(
-    id SERIAL PRIMARY KEY,
+    id bigserial PRIMARY KEY,
     cep VARCHAR(8) NOT NULL,
     complement VARCHAR(100),
     logradouro VARCHAR(100) NOT NULL,
