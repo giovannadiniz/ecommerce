@@ -92,15 +92,15 @@ public class ProductService extends BaseService<Product, ProductFilter> {
     @Transactional
     public ProductResponse updateProduct(Long id, ProductRequest request) {
         Product existingProduct = productRepository.findById(id)
-                .orElseThrow(() -> new CouponNotFoundException(id));
+                .orElseThrow(() -> new RuntimeException("Product not found"));
 
-        var couponUpdated = productMapper.requestToEntity(request);
+        var productUpdated = productMapper.requestToEntity(request);
 
-        BeanUtils.copyProperties(couponUpdated, existingProduct, "id");
+        BeanUtils.copyProperties(productUpdated, existingProduct, "id");
 
-        var updatedCoupon = productRepository.save(existingProduct);
+        var updatedProduct = productRepository.save(existingProduct);
 
-        return productMapper.entityToResponse(updatedCoupon);
+        return productMapper.entityToResponse(updatedProduct);
     }
 
     @Transactional

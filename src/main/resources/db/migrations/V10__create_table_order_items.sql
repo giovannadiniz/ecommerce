@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS order_items (
+CREATE TABLE IF NOT EXISTS trade.order_items (
                                           id bigserial PRIMARY KEY,
                                           order_id bigint NOT NULL,
                                           product_id bigint NOT NULL,

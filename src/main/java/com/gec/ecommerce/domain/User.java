@@ -15,9 +15,6 @@ import java.util.List;
 
 @Entity
 @Table(name = "users", schema = "security")
-@Data
-@AllArgsConstructor
-@EqualsAndHashCode(of = "id")
 public class User implements UserDetails {
 
     @Id

@@ -5,14 +5,12 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table(name = "carts", schema = "trade")
-@Data
-@AllArgsConstructor
-@EqualsAndHashCode(of = "id")
 public class Cart {
 
     @Id
@@ -24,7 +22,7 @@ public class Cart {
     private User userId;
 
     @Column(name = "total", nullable = false)
-    private Double total;
+    private BigDecimal total;
 
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<CartItem> items = new ArrayList<>();
@@ -41,11 +39,11 @@ public class Cart {
     }
 
 
-    public Double getTotal() {
+    public BigDecimal getTotal() {
         return total;
     }
 
-    public void setTotal(Double total) {
+    public void setTotal(BigDecimal total) {
         this.total = total;
     }
 }
