@@ -19,15 +19,31 @@ public class Cart {
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
-    private User userId;
+    private User user;
 
-    @Column(name = "total", nullable = false)
+    @Column(name = "total")
     private BigDecimal total;
 
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<CartItem> items = new ArrayList<>();
 
     public Cart() {
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User userId) {
+        this.user = userId;
+    }
+
+    public List<CartItem> getItems() {
+        return items;
+    }
+
+    public void setItems(List<CartItem> items) {
+        this.items = items;
     }
 
     public Long getId() {

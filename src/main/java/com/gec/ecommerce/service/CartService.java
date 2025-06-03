@@ -63,8 +63,8 @@ public class CartService extends BaseService<Cart, CartFilter> {
 
             if (cartFilter.id() != null)
                 predicates.add(cb.equal(root.get("id"), cartFilter.id()));
-            if (cartFilter.userId() != null)
-                predicates.add(cb.equal(root.get("userId"), cartFilter.userId()));
+            if (cartFilter.user() != null)
+                predicates.add(cb.equal(root.get("user"), cartFilter.user()));
             if (cartFilter.total() != null)
                 predicates.add(cb.equal(root.get("total"), cartFilter.total()));
 

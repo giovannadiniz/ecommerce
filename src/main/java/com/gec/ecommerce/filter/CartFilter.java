@@ -6,7 +6,7 @@ import java.math.BigDecimal;
 
 public record CartFilter(
         Long id,
-        User userId,
+        User user,
         BigDecimal total
 ) {
 }
