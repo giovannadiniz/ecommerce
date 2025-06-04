@@ -7,10 +7,28 @@ import com.gec.ecommerce.dto.request.CartRequest;
 import com.gec.ecommerce.dto.response.CartResponse;
 import com.gec.ecommerce.filter.CartFilter;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.springframework.stereotype.Component;
 
 @Component
 @Mapper(componentModel = "spring")
-public abstract class CartMapper extends BaseMapper<Cart, CartFilter,CartShallowDto,CartRequest, CartResponse>
-{
+public abstract class CartMapper extends BaseMapper<Cart, CartFilter, CartShallowDto, CartRequest, CartResponse> {
+
+    @Mapping(source = "user.id", target = "userId")
+    @Mapping(source = "product.id", target = "productId")
+    @Mapping(source = "product.price", target = "price")
+    @Override
+    public abstract CartResponse entityToResponse(Cart entity);
+
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "user", ignore = true)
+    @Mapping(target = "product", ignore = true)
+    @Mapping(target = "total", ignore = true)
+    @Override
+    public abstract Cart requestToEntity(CartRequest request);
+
+//    // Método para CartShallowDto (se necessário)
+//    @Mapping(source = "user.id", target = "userId")
+//    @Mapping(source = "product.id", target = "productId")
+//    public abstract CartShallowDto entityToShallowDto(Cart entity);
 }

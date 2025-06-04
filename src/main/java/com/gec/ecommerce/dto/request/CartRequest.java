@@ -1,5 +1,7 @@
 package com.gec.ecommerce.dto.request;
 
 public record CartRequest (
-        Long user
+        Long userId,
+        Long productId,
+        Integer quantity
 ) {}

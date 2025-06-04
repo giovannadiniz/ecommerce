@@ -1,6 +1,7 @@
 package com.gec.ecommerce.domain;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 
 import java.math.BigDecimal;
 

@@ -1,9 +1,7 @@
 package com.gec.ecommerce.domain;
 
+import com.gec.ecommerce.dto.response.ProductResponse;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
