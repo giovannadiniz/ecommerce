@@ -12,6 +12,7 @@ import com.gec.ecommerce.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.hibernate.service.spi.ServiceException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -50,7 +51,7 @@ public class UserController extends BaseController<User, UserFilter, UserShallow
     @Override
     public ResponseEntity<UserResponse> createNew(@Valid @RequestBody UserRequest userRequest){
         User user = userService.saveWithReturn(userMapper.requestToEntity(userRequest));
-        return ResponseEntity.ok().body(userMapper.entityToResponse(user));
+        return ResponseEntity.status(HttpStatus.CREATED).body(userMapper.entityToResponse(user));
     }
 
     @Override

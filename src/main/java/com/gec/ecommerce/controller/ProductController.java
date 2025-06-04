@@ -54,7 +54,7 @@ public class ProductController extends BaseController<Product, ProductFilter, Pr
     @Override
     public ResponseEntity<ProductResponse> createNew(@Valid @RequestBody ProductRequest productRequest) {
         Product product = productService.saveWithReturn(productMapper.requestToEntity(productRequest));
-        return ResponseEntity.ok().body(productMapper.entityToResponse(product));
+        return ResponseEntity.status(HttpStatus.CREATED).body(productMapper.entityToResponse(product));
     }
 
     @Override
