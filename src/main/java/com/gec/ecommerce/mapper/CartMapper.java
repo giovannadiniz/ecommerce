@@ -26,9 +26,4 @@ public abstract class CartMapper extends BaseMapper<Cart, CartFilter, CartShallo
     @Mapping(target = "total", ignore = true)
     @Override
     public abstract Cart requestToEntity(CartRequest request);
-
-//    // Método para CartShallowDto (se necessário)
-//    @Mapping(source = "user.id", target = "userId")
-//    @Mapping(source = "product.id", target = "productId")
-//    public abstract CartShallowDto entityToShallowDto(Cart entity);
 }

@@ -110,6 +110,8 @@ public class CartService extends BaseService<Cart, CartFilter> {
         return saveWithReturn(cart); // Usando método da BaseService
     }
 
+
+
     /**
      * Método para compatibilidade com código existente
      */

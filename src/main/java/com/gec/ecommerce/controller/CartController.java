@@ -9,6 +9,7 @@ import com.gec.ecommerce.dto.response.CartResponse;
 import com.gec.ecommerce.filter.CartFilter;
 import com.gec.ecommerce.mapper.CartMapper;
 import com.gec.ecommerce.service.CartService;
+import com.gec.ecommerce.service.TokenService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -24,10 +25,12 @@ import org.hibernate.service.spi.ServiceException;
 public class CartController extends BaseController<Cart, CartFilter, CartShallowDto, CartRequest, CartResponse, CartService> {
 
     private final CartService cartService;
+    private final TokenService tokenService;
     private final CartMapper cartMapper;
 
-    public CartController(CartService cartService, CartMapper cartMapper) {
+    public CartController(CartService cartService, TokenService tokenService, CartMapper cartMapper) {
         this.cartService = cartService;
+        this.tokenService = tokenService;
         this.cartMapper = cartMapper;
     }
 
@@ -130,4 +133,102 @@ public class CartController extends BaseController<Cart, CartFilter, CartShallow
             return ResponseEntity.badRequest().build();
         }
     }
+
+    @PostMapping("/my-cart")
+    public ResponseEntity<CartResponse> addToMyCart(
+            @Valid @RequestBody CartRequest cartRequest,
+            HttpServletRequest request) {
+        try {
+            Long userId = getUserIdFromToken(request);
+
+            // Cria novo CartRequest com userId extraído do token
+            CartRequest requestWithUserId = new CartRequest(userId, cartRequest.productId(), cartRequest.quantity());
+
+            Cart cart = cartService.createOrUpdateCart(requestWithUserId);
+            return ResponseEntity.ok(cartMapper.entityToResponse(cart));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(null); // Ou retorne uma mensagem de erro
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    /**
+     * Busca carrinho do usuário logado (via JWT)
+     */
+    @GetMapping("/my-cart")
+    public ResponseEntity<CartResponse> getMyCart(HttpServletRequest request) {
+        try {
+            Long userId = getUserIdFromToken(request);
+            CartResponse cart = cartService.findCartByUserId(userId);
+            return ResponseEntity.ok(cart);
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    /**
+     * Atualiza carrinho do usuário logado (via JWT)
+     */
+    @PutMapping("/my-cart")
+    public ResponseEntity<CartResponse> updateMyCart(
+            @Valid @RequestBody CartRequest cartRequest,
+            HttpServletRequest request) {
+        try {
+            Long userId = getUserIdFromToken(request);
+
+            // Primeiro, busca o carrinho existente para pegar o ID
+            CartResponse existingCart = cartService.findCartByUserId(userId);
+
+            // Atualiza usando o ID do carrinho
+            CartResponse updatedCart = cartService.updateCart(existingCart.id(), cartRequest);
+            return ResponseEntity.ok(updatedCart);
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    /**
+     * Remove carrinho do usuário logado (via JWT)
+     */
+    @DeleteMapping("/my-cart")
+    public ResponseEntity<Void> deleteMyCart(HttpServletRequest request) {
+        try {
+            Long userId = getUserIdFromToken(request);
+            cartService.deleteByUserId(userId);
+            return ResponseEntity.noContent().build();
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    /**
+     * Limpa carrinho do usuário logado (via JWT)
+     */
+    @PostMapping("/my-cart/clear")
+    public ResponseEntity<Void> clearMyCart(HttpServletRequest request) {
+        try {
+            Long userId = getUserIdFromToken(request);
+            cartService.clearCart(userId);
+            return ResponseEntity.ok().build();
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    /**
+     * Verifica se usuário logado tem carrinho (via JWT)
+     */
+    @GetMapping("/my-cart/exists")
+    public ResponseEntity<Boolean> hasMyCart(HttpServletRequest request) {
+        try {
+            Long userId = getUserIdFromToken(request);
+            boolean hasCart = cartService.hasCart(userId);
+            return ResponseEntity.ok(hasCart);
+        } catch (RuntimeException e) {
+            return ResponseEntity.ok(false);
+        }
+    }
+
 }
