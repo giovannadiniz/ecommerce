@@ -64,7 +64,6 @@ public class TokenService {
         }
     }
 
-    // NOVO MÉTODO: Valida token e retorna booleano
     public boolean isTokenValid(String token) {
         try {
             Algorithm algorithm = Algorithm.HMAC256(secret);

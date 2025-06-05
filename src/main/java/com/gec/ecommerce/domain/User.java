@@ -49,8 +49,8 @@ public class User implements UserDetails {
     }
 
     // Relacionamento um-para-um com Cart
-//    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-//    private Cart cart;
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private Cart cart;
 //
 //    // Relacionamento um-para-muitos com Orders
 //    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
@@ -60,7 +60,6 @@ public class User implements UserDetails {
 
     }
 
-    // Construtor personalizado (opcional, pode ser removido se usar @Builder)
     public User(String fullname, String username, String password, String email, UserRole role, String phone) {
         this.fullname = fullname;
         this.username = username;

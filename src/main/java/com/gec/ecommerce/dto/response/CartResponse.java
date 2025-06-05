@@ -6,7 +6,7 @@ public class CartResponse {
     private Long id;
     private Long userId;
     private Long productId;
-    private BigDecimal price; // Preço unitário do produto
+    private BigDecimal price;
     private Integer quantity;
     private BigDecimal total;
 

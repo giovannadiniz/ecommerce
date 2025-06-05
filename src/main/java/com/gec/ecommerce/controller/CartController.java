@@ -3,8 +3,10 @@ package com.gec.ecommerce.controller;
 import com.gec.ecommerce.bases.BaseController;
 import com.gec.ecommerce.bases.BasePaginatedResponse;
 import com.gec.ecommerce.domain.Cart;
+import com.gec.ecommerce.domain.User;
 import com.gec.ecommerce.dto.CartShallowDto;
 import com.gec.ecommerce.dto.request.CartRequest;
+import com.gec.ecommerce.dto.request.AddToCartRequest;
 import com.gec.ecommerce.dto.response.CartResponse;
 import com.gec.ecommerce.filter.CartFilter;
 import com.gec.ecommerce.mapper.CartMapper;
@@ -14,6 +16,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
@@ -72,163 +76,151 @@ public class CartController extends BaseController<Cart, CartFilter, CartShallow
 
     @Override
     public ResponseEntity<String> delete(Long id) {
-        return super.delete(id); // Usando implementação da base
+        return super.delete(id);
     }
 
     /**
-     * Busca carrinho por usuário
+     * Adiciona um produto ao carrinho do usuário autenticado
      */
-    @GetMapping("/user/{userId}")
-    public ResponseEntity<CartResponse> findByUserId(@PathVariable Long userId) {
+    @PostMapping("/add")
+    public ResponseEntity<CartResponse> addToCart(@Valid @RequestBody AddToCartRequest request) throws ServiceException {
         try {
-            CartResponse cart = cartService.findCartByUserId(userId);
-            return ResponseEntity.ok(cart);
+            // Obtém o usuário autenticado
+            User authenticatedUser = getAuthenticatedUser();
+
+            // Cria o CartRequest com o ID do usuário autenticado
+            CartRequest cartRequest = new CartRequest(
+                    authenticatedUser.getId(),
+                    request.productId(),
+                    request.quantity()
+            );
+
+            Cart cart = cartService.createOrUpdateCart(cartRequest);
+            return ResponseEntity.status(HttpStatus.CREATED).body(cartMapper.entityToResponse(cart));
         } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
+            throw new ServiceException("Error adding product to cart: " + e.getMessage(), e);
         }
     }
 
     /**
-     * Verifica se usuário tem carrinho
-     */
-    @GetMapping("/user/{userId}/exists")
-    public ResponseEntity<Boolean> hasCart(@PathVariable Long userId) {
-        boolean hasCart = cartService.hasCart(userId);
-        return ResponseEntity.ok(hasCart);
-    }
-
-    /**
-     * Remove carrinho por usuário
-     */
-    @DeleteMapping("/user/{userId}")
-    public ResponseEntity<Void> deleteByUserId(@PathVariable Long userId) {
-        cartService.deleteByUserId(userId);
-        return ResponseEntity.noContent().build();
-    }
-
-    /**
-     * Limpa carrinho (remove produto mas mantém carrinho)
-     */
-    @PostMapping("/user/{userId}/clear")
-    public ResponseEntity<Void> clearCart(@PathVariable Long userId) {
-        cartService.clearCart(userId);
-        return ResponseEntity.ok().build();
-    }
-
-    /**
-     * Endpoint para criar/atualizar carrinho de forma mais específica
-     */
-    @PostMapping("/user/{userId}")
-    public ResponseEntity<CartResponse> createOrUpdateForUser(
-            @PathVariable Long userId,
-            @Valid @RequestBody CartRequest cartRequest) {
-
-        // Força o userId da URL
-        CartRequest requestWithUserId = new CartRequest(userId, cartRequest.productId(), cartRequest.quantity());
-
-        try {
-            Cart cart = cartService.createOrUpdateCart(requestWithUserId);
-            return ResponseEntity.ok(cartMapper.entityToResponse(cart));
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().build();
-        }
-    }
-
-    @PostMapping("/my-cart")
-    public ResponseEntity<CartResponse> addToMyCart(
-            @Valid @RequestBody CartRequest cartRequest,
-            HttpServletRequest request) {
-        try {
-            Long userId = getUserIdFromToken(request);
-
-            // Cria novo CartRequest com userId extraído do token
-            CartRequest requestWithUserId = new CartRequest(userId, cartRequest.productId(), cartRequest.quantity());
-
-            Cart cart = cartService.createOrUpdateCart(requestWithUserId);
-            return ResponseEntity.ok(cartMapper.entityToResponse(cart));
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(null); // Ou retorne uma mensagem de erro
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
-        }
-    }
-
-    /**
-     * Busca carrinho do usuário logado (via JWT)
+     * Obtém o carrinho do usuário autenticado
      */
     @GetMapping("/my-cart")
-    public ResponseEntity<CartResponse> getMyCart(HttpServletRequest request) {
+    public ResponseEntity<CartResponse> getMyCart() {
         try {
-            Long userId = getUserIdFromToken(request);
-            CartResponse cart = cartService.findCartByUserId(userId);
-            return ResponseEntity.ok(cart);
+            User authenticatedUser = getAuthenticatedUser();
+
+            Optional<CartResponse> cart = cartService.findCartByUserIdOptional(authenticatedUser.getId());
+
+            if (cart.isPresent()) {
+                return ResponseEntity.ok(cart.get());
+            } else {
+                return ResponseEntity.notFound().build();
+            }
         } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
     /**
-     * Atualiza carrinho do usuário logado (via JWT)
+     * Atualiza a quantidade de um produto no carrinho do usuário autenticado
      */
-    @PutMapping("/my-cart")
-    public ResponseEntity<CartResponse> updateMyCart(
-            @Valid @RequestBody CartRequest cartRequest,
-            HttpServletRequest request) {
+    @PutMapping("/update-quantity")
+    public ResponseEntity<CartResponse> updateQuantity(@Valid @RequestBody AddToCartRequest request) throws ServiceException {
         try {
-            Long userId = getUserIdFromToken(request);
+            User authenticatedUser = getAuthenticatedUser();
 
-            // Primeiro, busca o carrinho existente para pegar o ID
-            CartResponse existingCart = cartService.findCartByUserId(userId);
+            // Busca o carrinho do usuário
+            Optional<Cart> existingCart = cartService.findById(authenticatedUser.getId());
 
-            // Atualiza usando o ID do carrinho
-            CartResponse updatedCart = cartService.updateCart(existingCart.id(), cartRequest);
+            if (existingCart.isEmpty()) {
+                throw new RuntimeException("Cart not found for user");
+            }
+
+            CartRequest cartRequest = new CartRequest(
+                    authenticatedUser.getId(),
+                    request.productId(),
+                    request.quantity()
+            );
+
+            CartResponse updatedCart = cartService.updateCart(existingCart.get().getId(), cartRequest);
             return ResponseEntity.ok(updatedCart);
         } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
+            throw new ServiceException("Error updating cart quantity: " + e.getMessage(), e);
         }
     }
 
     /**
-     * Remove carrinho do usuário logado (via JWT)
+     * Remove o carrinho do usuário autenticado
      */
-    @DeleteMapping("/my-cart")
-    public ResponseEntity<Void> deleteMyCart(HttpServletRequest request) {
+    @DeleteMapping("/clear")
+    public ResponseEntity<String> clearMyCart() {
         try {
-            Long userId = getUserIdFromToken(request);
-            cartService.deleteByUserId(userId);
-            return ResponseEntity.noContent().build();
+            User authenticatedUser = getAuthenticatedUser();
+            cartService.clearCart(authenticatedUser.getId());
+            return ResponseEntity.ok("Cart cleared successfully");
         } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error clearing cart: " + e.getMessage());
         }
     }
 
     /**
-     * Limpa carrinho do usuário logado (via JWT)
+     * Remove completamente o carrinho do usuário autenticado
      */
-    @PostMapping("/my-cart/clear")
-    public ResponseEntity<Void> clearMyCart(HttpServletRequest request) {
+    @DeleteMapping("/remove")
+    public ResponseEntity<String> removeMyCart() {
         try {
-            Long userId = getUserIdFromToken(request);
-            cartService.clearCart(userId);
-            return ResponseEntity.ok().build();
+            User authenticatedUser = getAuthenticatedUser();
+            cartService.deleteByUserId(authenticatedUser.getId());
+            return ResponseEntity.ok("Cart removed successfully");
         } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error removing cart: " + e.getMessage());
         }
     }
 
     /**
-     * Verifica se usuário logado tem carrinho (via JWT)
+     * Método auxiliar para obter o usuário autenticado do contexto de segurança
      */
-    @GetMapping("/my-cart/exists")
-    public ResponseEntity<Boolean> hasMyCart(HttpServletRequest request) {
-        try {
-            Long userId = getUserIdFromToken(request);
-            boolean hasCart = cartService.hasCart(userId);
-            return ResponseEntity.ok(hasCart);
-        } catch (RuntimeException e) {
-            return ResponseEntity.ok(false);
+    private User getAuthenticatedUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new RuntimeException("User not authenticated");
         }
+
+        Object principal = authentication.getPrincipal();
+
+        if (!(principal instanceof User)) {
+            throw new RuntimeException("Invalid authentication principal");
+        }
+
+        return (User) principal;
     }
 
+    /**
+     * Método alternativo para extrair usuário do token no header (caso necessário)
+     */
+    private User getUserFromToken(HttpServletRequest request) {
+        String authHeader = request.getHeader("Authorization");
+
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            throw new RuntimeException("Invalid or missing authorization header");
+        }
+
+        String token = authHeader.substring(7); // Remove "Bearer "
+        String username = tokenService.validateToken(token);
+
+        if (username == null) {
+            throw new RuntimeException("Invalid token");
+        }
+
+        // Aqui você precisaria buscar o usuário pelo username
+        // Este é um exemplo - você deve implementar conforme sua lógica
+        // User user = userService.findByUsername(username);
+        // return user;
+
+        throw new RuntimeException("Method not fully implemented - use getAuthenticatedUser() instead");
+    }
 }

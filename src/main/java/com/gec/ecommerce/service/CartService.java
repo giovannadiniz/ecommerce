@@ -48,9 +48,6 @@ public class CartService extends BaseService<Cart, CartFilter> {
         return cartRepository;
     }
 
-    /**
-     * Implementação obrigatória do método abstrato da BaseService
-     */
     @Override
     public Page<Cart> findAll(int page, int size, CartFilter cartFilter) {
         Pageable pageable = Pageable.ofSize(size).withPage(page);
@@ -73,12 +70,6 @@ public class CartService extends BaseService<Cart, CartFilter> {
         return cartRepository.findAll(spec, pageable);
     }
 
-    // ========== MÉTODOS ESPECÍFICOS DO CARRINHO ==========
-
-    /**
-     * Cria ou atualiza o carrinho do usuário
-     * Como cada usuário pode ter apenas um carrinho, se já existir, será atualizado
-     */
     @Transactional
     public Cart createOrUpdateCart(CartRequest request) {
         User user = userService.findById(request.userId())
@@ -109,8 +100,6 @@ public class CartService extends BaseService<Cart, CartFilter> {
         cart.calculateTotal();
         return saveWithReturn(cart); // Usando método da BaseService
     }
-
-
 
     /**
      * Método para compatibilidade com código existente

@@ -42,7 +42,7 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(HttpMethod.POST, "/user/new").permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/register").permitAll()
-                        .requestMatchers(HttpMethod.POST, "cart/new").permitAll()
+                        .requestMatchers(HttpMethod.POST, "cart/add").authenticated()
                         .requestMatchers(HttpMethod.OPTIONS, "/auth/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/product/new").permitAll()
