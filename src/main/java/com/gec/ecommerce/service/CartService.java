@@ -85,6 +85,7 @@ public class CartService extends BaseService<Cart, CartFilter> {
         if (existingCart.isPresent()) {
             // Atualiza carrinho existente
             cart = existingCart.get();
+            cart.setProductName(product.getName());
             cart.setProduct(product);
             cart.setQuantity(request.quantity() != null ? request.quantity() : 1);
             logger.info("Updating existing cart for user: " + request.userId());
@@ -93,6 +94,7 @@ public class CartService extends BaseService<Cart, CartFilter> {
             cart = new Cart();
             cart.setUser(user);
             cart.setProduct(product);
+            cart.setProductName(product.getName());
             cart.setQuantity(request.quantity() != null ? request.quantity() : 1);
             logger.info("Creating new cart for user: " + request.userId());
         }

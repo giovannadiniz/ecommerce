@@ -17,6 +17,7 @@ public abstract class CartMapper extends BaseMapper<Cart, CartFilter, CartShallo
     @Mapping(source = "user.id", target = "userId")
     @Mapping(source = "product.id", target = "productId")
     @Mapping(source = "product.price", target = "price")
+    @Mapping(source = "product.name", target = "productName")
     @Override
     public abstract CartResponse entityToResponse(Cart entity);
 

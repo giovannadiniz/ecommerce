@@ -2,6 +2,7 @@ CREATE TABLE trade.carts (
                              id BIGSERIAL PRIMARY KEY,
                              user_id BIGINT NOT NULL,
                              product_id BIGINT NOT NULL,
+                             product_name VARCHAR(100) NOT NULL,
                              quantity INTEGER NOT NULL DEFAULT 1,
                              total NUMERIC(19,2) NOT NULL,
                              created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,

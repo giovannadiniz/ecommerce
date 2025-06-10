@@ -79,9 +79,6 @@ public class CartController extends BaseController<Cart, CartFilter, CartShallow
         return super.delete(id);
     }
 
-    /**
-     * Adiciona um produto ao carrinho do usuário autenticado
-     */
     @PostMapping("/add")
     public ResponseEntity<CartResponse> addToCart(@Valid @RequestBody AddToCartRequest request) throws ServiceException {
         try {
@@ -92,6 +89,7 @@ public class CartController extends BaseController<Cart, CartFilter, CartShallow
             CartRequest cartRequest = new CartRequest(
                     authenticatedUser.getId(),
                     request.productId(),
+                    request.productName(),
                     request.quantity()
             );
 
@@ -140,6 +138,7 @@ public class CartController extends BaseController<Cart, CartFilter, CartShallow
             CartRequest cartRequest = new CartRequest(
                     authenticatedUser.getId(),
                     request.productId(),
+                    request.productName(),
                     request.quantity()
             );
 

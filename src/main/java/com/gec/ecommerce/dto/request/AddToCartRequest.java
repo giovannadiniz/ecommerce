@@ -11,11 +11,10 @@ public record AddToCartRequest(
         @NotNull(message = "Product ID is required")
         Long productId,
 
+        @NotNull(message = "Product's name is required")
+        String productName,
+
         @Positive(message = "Quantity must be positive")
         Integer quantity
 ) {
-    // Construtor com valor padrão para quantity
-    public AddToCartRequest(Long productId) {
-        this(productId, 1);
-    }
 }

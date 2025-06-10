@@ -6,6 +6,7 @@ public class CartResponse {
     private Long id;
     private Long userId;
     private Long productId;
+    private String productName;
     private BigDecimal price;
     private Integer quantity;
     private BigDecimal total;
@@ -14,14 +15,23 @@ public class CartResponse {
     public CartResponse() {}
 
     // Construtor completo
-    public CartResponse(Long id, Long userId, Long productId,
+    public CartResponse(Long id, Long userId, Long productId, String productName,
                         BigDecimal productPrice, Integer quantity, BigDecimal total) {
         this.id = id;
         this.userId = userId;
         this.productId = productId;
+        this.productName = productName;
         this.price = productPrice;
         this.quantity = quantity;
         this.total = total;
+    }
+
+    public String getProductName() {
+        return productName;
+    }
+
+    public void setProductName(String productName) {
+        this.productName = productName;
     }
 
     // Getters e Setters

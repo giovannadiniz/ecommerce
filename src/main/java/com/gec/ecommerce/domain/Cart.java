@@ -23,6 +23,17 @@ public class Cart {
     @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 
+    @JoinColumn(name = "product_name", nullable = false)
+    private String productName;
+
+    public String getProductName() {
+        return productName;
+    }
+
+    public void setProductName(String productName) {
+        this.productName = productName;
+    }
+
     @Column(name = "quantity", nullable = false)
     private Integer quantity = 1;  // Valor padrão 1
 
