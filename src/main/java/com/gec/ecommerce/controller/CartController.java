@@ -79,13 +79,26 @@ public class CartController extends BaseController<Cart, CartFilter, CartShallow
         return super.delete(id);
     }
 
+    @DeleteMapping("/cart/{id}")
+    public ResponseEntity<String> removerCart(@PathVariable Long id) throws ServiceException {
+        try {
+            User authenticatedUser = getAuthenticatedUser();
+            CartResponse cart = cartService.findCartByUserId(authenticatedUser.getId());
+            if (!cart.getId().equals(id)) {
+                throw new ServiceException("Unauthorized: Cart ID does not belong to the authenticated user");
+            }
+            cartService.delete(id);
+            return ResponseEntity.ok("Cart deleted successfully");
+        } catch (RuntimeException e) {
+            throw new ServiceException("Failed to delete cart: " + e.getMessage(), e);
+        }
+    }
+
     @PostMapping("/add")
     public ResponseEntity<CartResponse> addToCart(@Valid @RequestBody AddToCartRequest request) throws ServiceException {
         try {
-            // Obtém o usuário autenticado
             User authenticatedUser = getAuthenticatedUser();
 
-            // Cria o CartRequest com o ID do usuário autenticado
             CartRequest cartRequest = new CartRequest(
                     authenticatedUser.getId(),
                     request.productId(),
@@ -128,12 +141,7 @@ public class CartController extends BaseController<Cart, CartFilter, CartShallow
         try {
             User authenticatedUser = getAuthenticatedUser();
 
-            // Busca o carrinho do usuário
-            Optional<Cart> existingCart = cartService.findById(authenticatedUser.getId());
-
-            if (existingCart.isEmpty()) {
-                throw new RuntimeException("Cart not found for user");
-            }
+            CartResponse existingCart = cartService.findCartByUserId(authenticatedUser.getId());
 
             CartRequest cartRequest = new CartRequest(
                     authenticatedUser.getId(),
@@ -142,10 +150,10 @@ public class CartController extends BaseController<Cart, CartFilter, CartShallow
                     request.quantity()
             );
 
-            CartResponse updatedCart = cartService.updateCart(existingCart.get().getId(), cartRequest);
+            CartResponse updatedCart = cartService.updateCart(existingCart.getId(), cartRequest);
             return ResponseEntity.ok(updatedCart);
         } catch (RuntimeException e) {
-            throw new ServiceException("Error updating cart quantity: " + e.getMessage(), e);
+            throw new ServiceException("Failed to update cart quantity: " + e.getMessage(), e);
         }
     }
 

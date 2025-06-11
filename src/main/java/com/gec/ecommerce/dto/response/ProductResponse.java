@@ -12,13 +12,24 @@ public class ProductResponse {
     private int quantity;
     private boolean active;
 
-    public ProductResponse(Product product) {
-        this.id = product.getId();
-        this.name = product.getName();
-        this.description = product.getDescription();
-        this.price = product.getPrice();
-        this.quantity = product.getQuantity();
-        this.active = product.isActive();
+    public ProductResponse(Long id, String name, String description, BigDecimal price, int quantity, boolean active) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.price = price;
+        this.quantity = quantity;
+        this.active = active;
+    }
+
+    public static ProductResponse fromProduct(Product product) {
+        return new ProductResponse(
+                product.getId(),
+                product.getName(),
+                product.getDescription(),
+                product.getPrice(),
+                product.getQuantity(),
+                product.isActive()
+        );
     }
 
     public Long getId() {

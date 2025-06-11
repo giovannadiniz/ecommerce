@@ -53,7 +53,15 @@ public class ProductService extends BaseService<Product, ProductFilter> {
 
     public List<ProductResponse> pesquisarProducts() {
         List<Product> products = productRepository.findAll();
-        return products.stream().map(ProductResponse::new)
+        return products.stream()
+                .map(product -> new ProductResponse(
+                        product.getId(),
+                        product.getName(),
+                        product.getDescription(),
+                        product.getPrice(),
+                        product.getQuantity(),
+                        product.isActive()
+                ))
                 .collect(Collectors.toList());
     }
 

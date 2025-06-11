@@ -162,19 +162,19 @@ public class CartService extends BaseService<Cart, CartFilter> {
      */
     @Transactional
     public CartResponse updateCart(Long id, CartRequest request) {
-        logger.info("Updating cart with ID: " + id);
 
         Cart existingCart = findById(id)
-                .orElseThrow(() -> new RuntimeException("Cart not found"));
+                .orElseThrow(() -> new RuntimeException("Cart not found for ID: " + id));
 
         Product product = productService.findById(request.productId())
-                .orElseThrow(() -> new RuntimeException("Product not found"));
+                .orElseThrow(() -> new RuntimeException("Product not found for ID: " + request.productId()));
 
         existingCart.setProduct(product);
-        existingCart.setQuantity(request.quantity() != null ? request.quantity() : existingCart.getQuantity());
+        existingCart.setProductName(product.getName());
+        existingCart.setQuantity(request.quantity());
         existingCart.calculateTotal();
 
-        Cart updatedCart = saveWithReturn(existingCart); // Usando método da BaseService
+        Cart updatedCart = saveWithReturn(existingCart);
         return cartMapper.entityToResponse(updatedCart);
     }
 

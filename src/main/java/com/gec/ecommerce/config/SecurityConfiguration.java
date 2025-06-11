@@ -43,6 +43,8 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.POST, "/user/new").permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/register").permitAll()
                         .requestMatchers(HttpMethod.POST, "cart/add").authenticated()
+                        .requestMatchers(HttpMethod.PUT, "cart/update-quantity").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/cart/{id}").authenticated()
                         .requestMatchers(HttpMethod.OPTIONS, "/auth/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/product/new").permitAll()
