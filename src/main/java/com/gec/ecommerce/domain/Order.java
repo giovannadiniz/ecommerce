@@ -15,16 +15,28 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "address_id", nullable = false)
-    private Address address;
+    @JoinColumn(name = "product_id", nullable = false)
+    private Product productId;
 
-    @OneToOne(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Payment payment;
+    @Column(name = "quantity", nullable = false)
+    private Integer quantity;
+
+    @Column(name = "status", nullable = false)
+    private String status;
+
+    @Column(name = "txid", length = 500)
+    private String txid;
+
+    @Column(name = "qr_code", columnDefinition = "TEXT")
+    private String qrCode;
+
+    @Column(name = "qr_code_image", columnDefinition = "TEXT")
+    private String qrCodeImage;
 
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal total;
@@ -32,18 +44,81 @@ public class Order {
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
-    public Order() {
-    }
+    @Column(name = "payment_date")
+    private LocalDateTime paymentDate;
 
     @PrePersist
     protected void onCreate() {
-        this.createdAt = LocalDateTime.now();
-        if (this.total == null) {
-            this.total = BigDecimal.ZERO;
-        }
+        createdAt = LocalDateTime.now();
+        status = "PENDENTE";
     }
 
-    // Getters and Setters
+    public Order() {
+    }
+
+    public Order(User user, Product productId, Integer quantity, BigDecimal total) {
+        this.user = user;
+        this.productId = productId;
+        this.quantity = quantity;
+        this.total = total;
+    }
+
+    public Product getProductId() {
+        return productId;
+    }
+
+    public void setProductId(Product productId) {
+        this.productId = productId;
+    }
+
+    public Integer getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(Integer quantity) {
+        this.quantity = quantity;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getTxid() {
+        return txid;
+    }
+
+    public void setTxid(String txid) {
+        this.txid = txid;
+    }
+
+    public String getQrCode() {
+        return qrCode;
+    }
+
+    public void setQrCode(String qrCode) {
+        this.qrCode = qrCode;
+    }
+
+    public String getQrCodeImage() {
+        return qrCodeImage;
+    }
+
+    public void setQrCodeImage(String qrCodeImage) {
+        this.qrCodeImage = qrCodeImage;
+    }
+
+    public LocalDateTime getPaymentDate() {
+        return paymentDate;
+    }
+
+    public void setPaymentDate(LocalDateTime paymentDate) {
+        this.paymentDate = paymentDate;
+    }
+
     public Long getId() {
         return id;
     }
@@ -60,24 +135,6 @@ public class Order {
         this.user = user;
     }
 
-    public Address getAddress() {
-        return address;
-    }
-
-    public void setAddress(Address address) {
-        this.address = address;
-    }
-
-    public Payment getPayment() {
-        return payment;
-    }
-
-    public void setPayment(Payment payment) {
-        this.payment = payment;
-        if (payment != null && payment.getOrder() != this) {
-            payment.setOrder(this);
-        }
-    }
 
     public BigDecimal getTotal() {
         return total;

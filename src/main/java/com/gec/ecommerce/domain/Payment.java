@@ -22,20 +22,12 @@ public class Payment {
     @Column(nullable = false, length = 50)
     private String status;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_id", nullable = false)
-    private Order order;
 
     @Column(name = "paid_at", nullable = false)
     private LocalDateTime paidAt;
 
     public Payment() {
 
-    }
-
-    public void setOrder(Order order) {
-        this.order = order;
-        order.setPayment(this);  // Mantém a consistência do relacionamento
     }
 
     @PrePersist
@@ -51,9 +43,6 @@ public class Payment {
         this.id = id;
     }
 
-    public Order getOrder() {
-        return order;
-    }
 
     public String getPaymentMethod() {
         return paymentMethod;
