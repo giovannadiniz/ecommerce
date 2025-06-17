@@ -15,10 +15,19 @@ public class PixController {
     @Autowired
     private PixService pixService;
 
-    @GetMapping
-    public ResponseEntity pixCreateEVP(){
+//    @GetMapping
+//    public ResponseEntity pixCreateEVP(){
+//
+//        JSONObject response = this.pixService.pixCreateEVP();
+//        return ResponseEntity.ok()
+//                .contentType(MediaType.APPLICATION_JSON)
+//                .body(response.toString());
+//    }
 
-        JSONObject response = this.pixService.pixCreateEVP();
+    @GetMapping
+    public ResponseEntity listarEVPs(){
+
+        String response = this.pixService.listarEVPs();
         return ResponseEntity.ok()
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(response.toString());

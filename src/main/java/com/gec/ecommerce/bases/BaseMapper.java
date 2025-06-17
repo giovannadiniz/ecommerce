@@ -1,6 +1,7 @@
 package com.gec.ecommerce.bases;
 
 
+import com.gec.ecommerce.dto.request.OrderRequest;
 
 public abstract class BaseMapper<Entity, EntityFilter, EntityShallowDto, EntityRequest, EntityResponse> {
 

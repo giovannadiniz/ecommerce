@@ -1,6 +1,7 @@
 package com.gec.ecommerce.controller;
 
 import com.gec.ecommerce.domain.Order;
+import com.gec.ecommerce.dto.response.OrderResponse;
 import com.gec.ecommerce.dto.request.CheckoutRequest;
 import com.gec.ecommerce.dto.request.OrderRequest;
 import com.gec.ecommerce.dto.response.OrderResponse;
@@ -8,6 +9,7 @@ import com.gec.ecommerce.dto.response.StatusResponse;
 import com.gec.ecommerce.mapper.CartMapper;
 import com.gec.ecommerce.mapper.OrderMapper;
 import com.gec.ecommerce.service.CheckoutService;
+import jakarta.validation.Valid;
 import org.hibernate.service.spi.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,15 +27,11 @@ public class CheckoutController {
     private OrderMapper orderMapper;
 
     @PostMapping("/processar")
-    public ResponseEntity<OrderResponse> processarCheckout(@RequestBody OrderRequest request) throws ServiceException {
-        try {
-            Order order = checkoutService.processarCheckout(request);
-            return ResponseEntity.status(HttpStatus.CREATED).body(orderMapper.entityToResponse(order));
-        }  catch (RuntimeException e) {
-        throw new ServiceException("Error creating order: " + e.getMessage(), e);
-        }
+    public ResponseEntity<OrderResponse> processarCheckout(@Valid @RequestBody OrderRequest request) {
+         Order order = checkoutService.processarCheckout(request);
+         return ResponseEntity.ok().body(orderMapper.entityToResponse(order));
     }
-
+}
 
 //    @GetMapping("/status/{orderId}")
 //    public ResponseEntity<?> verificarStatus(@PathVariable Long orderId) {
@@ -79,4 +77,3 @@ public class CheckoutController {
 //                return "Status desconhecido";
 //        }
 //    }
-}

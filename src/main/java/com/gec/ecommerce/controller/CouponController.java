@@ -11,6 +11,7 @@ import com.gec.ecommerce.mapper.CouponMapper;
 import com.gec.ecommerce.service.CouponService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+import org.hibernate.service.spi.ServiceException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -48,10 +49,15 @@ public class CouponController extends BaseController<Coupon, CouponFilter, Coupo
     }
 
     @Override
-    public ResponseEntity<CouponResponse> createNew(@Valid @RequestBody CouponRequest couponRequest) {
-        Coupon coupon = couponService.saveWithReturn(couponMapper.requestToEntity(couponRequest));
-        return ResponseEntity.ok().body(couponMapper.entityToResponse(coupon));
+    public ResponseEntity<CouponResponse> createNew(CouponRequest couponRequest) throws ServiceException {
+        return null;
     }
+
+//    @Override
+//    public ResponseEntity<CouponResponse> createNew(@Valid @RequestBody CouponRequest couponRequest) {
+//        Coupon coupon = couponService.saveWithReturn(couponMapper.requestToEntity(couponRequest));
+//        return ResponseEntity.ok().body(couponMapper.entityToResponse(coupon));
+//    }
 
     @Override
     public ResponseEntity<CouponResponse> update(@Valid @RequestBody CouponRequest couponRequest, Long id) {

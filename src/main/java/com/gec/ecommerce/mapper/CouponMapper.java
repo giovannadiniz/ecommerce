@@ -13,4 +13,4 @@ import org.mapstruct.*;
 @Component
 @Mapper(componentModel = "spring")
 public abstract class CouponMapper extends BaseMapper<Coupon, CouponFilter, CouponShallowDto, CouponRequest, CouponResponse>
-    {}
+{}

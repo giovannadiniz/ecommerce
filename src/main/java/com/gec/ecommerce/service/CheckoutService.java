@@ -1,32 +1,22 @@
 package com.gec.ecommerce.service;
 
-import com.gec.ecommerce.domain.Cart;
+import com.gec.ecommerce.bases.BaseService;
 import com.gec.ecommerce.domain.Order;
 import com.gec.ecommerce.domain.Product;
 import com.gec.ecommerce.domain.User;
-import com.gec.ecommerce.dto.request.CheckoutRequest;
 import com.gec.ecommerce.dto.request.OrderRequest;
-import com.gec.ecommerce.dto.response.OrderResponse;
-import com.gec.ecommerce.dto.response.PixResponse;
-import com.gec.ecommerce.repository.CartRepository;
+import com.gec.ecommerce.filter.OrderFilter;
 import com.gec.ecommerce.repository.OrderRepository;
-import com.gec.ecommerce.repository.UserRepository;
 import jakarta.transaction.Transactional;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
-import java.util.Optional;
+import java.math.BigDecimal;
 
 @Service
-public class CheckoutService {
-
-    @Autowired
-    private OrderRepository orderRepository;
-
-    @Autowired
-    private UserRepository userRepository;
+public class CheckoutService extends BaseService<Order, OrderFilter> {
 
     @Autowired
     private UserService userService;
@@ -40,58 +30,64 @@ public class CheckoutService {
     @Autowired
     private CartService cartService;
 
+    @Autowired
+    private OrderRepository orderRepository;
+
     @Transactional
     public Order processarCheckout(OrderRequest request) {
-        try {
-            // Buscar o usuário
             User user = userService.findById(request.userId())
                     .orElseThrow(() -> new RuntimeException("User not found"));
 
             Product product = productService.findById(request.productId())
                     .orElseThrow(() -> new RuntimeException("Product not found"));
 
-//            Order order = new Order();
-//                    order.setUser(user);
-//                    order.setProductId(product);
-//                    order.setQuantity(request.quantity() > 0 ? request.quantity() : 1);
-//                    order.setTotal(request.total());
+            String chaveJson = pixService.listarEVPs();
+            String pixResponse = pixService.pixCreateCharge(chaveJson, request.total());
 
-            // Salvar pedido inicialmente
-//            order = orderRepository.save(order);
+            Order order = createOrder(user, product, request, pixResponse);
 
-            JSONObject chaveJson = pixService.pixCreateEVP();
+            order = orderRepository.save(order);
 
-//            Gerar cobrança PIX
-//            PixResponse pixResponse = pixService.pixCreateCharge(chaveJson, request.total());
-//
-//
-//           Atualizar pedido com dados do PIX
-//            order.setTxid(pixResponse.getTxid());
-//            order.setQrCode(pixResponse.getQrCode());
-//            order.setQrCodeImage(pixResponse.getQrCodeImage());
 
-            // Salvar pedido atualizado
-//            order = orderRepository.save(order);
+            /*
+            Atualizar pedido com dados do PIX
+            order.setTxid(pixResponse.getTxid());
+            order.setQrCode(pixResponse.getQrCode());
+            order.setQrCodeImage(pixResponse.getQrCodeImage());
+            */
 
-            // Limpar carrinho após criar pedido
-             cartService.delete(request.idCart());
+            cartService.delete(request.idCart());
 
-            return null;
+            return order;
+    }
 
-//            return new CheckoutResponse(
-//                    order.getId(),
-//                    order.getQuantity(),
-//                    order.getTotal(),
-//                    order.getQrCode(),
-//                    order.getQrCodeImage(),
-//                    order.getStatus()
-//            );
+    private Order createOrder(User user, Product product, OrderRequest request, String pixResponse) {
+        BigDecimal total = new BigDecimal(request.total());
 
-        } catch (Exception e) {
-            System.err.println("Erro ao processar checkout: " + e.getMessage());
-            e.printStackTrace();
-            throw new RuntimeException("Erro ao processar checkout: " + e.getMessage(), e);
-        }
+        Order order = new Order();
+        order.setUser(user);
+        order.setProduct(product);
+        order.setStatus("pendente");
+        order.setQuantity(request.quantity() > 0 ? request.quantity() : 1);
+        order.setTotal(total);
+        order.setQrCode(pixResponse);
+
+
+        // TODO: Implementar parsing do pixResponse para extrair dados específicos
+        // order.setTxid(pixData.getTxid());
+        // order.setQrCodeImage(pixData.getQrCodeImage());
+
+        return order;
+    }
+
+    @Override
+    public JpaRepository<Order, Long> getRepository() {
+        return orderRepository;
+    }
+
+    @Override
+    public Page<Order> findAll(int page, int size, OrderFilter orderFilter) {
+        return null;
     }
 }
 

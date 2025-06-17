@@ -26,26 +26,49 @@ public class PixService {
     @Value("${efi.client.secret}")
     private String clientSecret;
 
-    public JSONObject pixCreateEVP() {
+//    public JSONObject pixCreateEVP() {
+//
+//        JSONObject options = configuringJsonObject();
+//
+//        try {
+//            EfiPay efi = new EfiPay(options);
+//            JSONObject response = efi.call("pixCreateEvp", new HashMap<String,String>(), new JSONObject());
+//            System.out.println(response.toString());
+//            return response;
+//        }catch (EfiPayException e){
+//            System.out.println(e.getError());
+//            System.out.println(e.getErrorDescription());
+//        }
+//        catch (Exception e) {
+//            System.out.println(e.getMessage());
+//        }
+//        return null;
+//    }
 
+    public String listarEVPs() {
         JSONObject options = configuringJsonObject();
 
         try {
             EfiPay efi = new EfiPay(options);
-            JSONObject response = efi.call("pixCreateEvp", new HashMap<String,String>(), new JSONObject());
+            JSONObject response = efi.call("pixListEvp", new HashMap<>(), new JSONObject());
+
             System.out.println(response.toString());
-            return response;
-        }catch (EfiPayException e){
+
+            JSONArray chaves = response.getJSONArray("chaves");
+            String primeiraChave = chaves.getString(0);
+
+            return primeiraChave;
+        } catch (EfiPayException e) {
             System.out.println(e.getError());
             System.out.println(e.getErrorDescription());
-        }
-        catch (Exception e) {
-            System.out.println(e.getMessage());
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return null;
     }
 
-    public JSONObject pixCreateCharge(String chave, String valor){
+    public String pixCreateCharge(String chave, String valor){
 
         JSONObject options = configuringJsonObject();
 
@@ -55,21 +78,19 @@ public class PixService {
         body.put("valor", new JSONObject().put("original", valor));
         body.put("chave", chave);
 
-        JSONArray infoAdicionais = new JSONArray();
-        infoAdicionais.put(new JSONObject().put("nome", "Campo 1").put("valor", "Informação Adicional1 do PSP-Recebedor"));
-        infoAdicionais.put(new JSONObject().put("nome", "Campo 2").put("valor", "Informação Adicional2 do PSP-Recebedor"));
-        body.put("infoAdicionais", infoAdicionais);
+//        JSONArray infoAdicionais = new JSONArray();
+//        infoAdicionais.put(new JSONObject().put("nome", "Campo 1").put("valor", "Informação Adicional1 do PSP-Recebedor"));
+//        infoAdicionais.put(new JSONObject().put("nome", "Campo 2").put("valor", "Informação Adicional2 do PSP-Recebedor"));
+//        body.put("infoAdicionais", infoAdicionais);
 
         try {
             EfiPay efi = new EfiPay(options);
             JSONObject response = efi.call("pixCreateImmediateCharge", new HashMap<String,String>(), body);
 
-            int idFromJson= response.getJSONObject("loc").getInt("id");
-            pixGenerateQRCode(String.valueOf(idFromJson));
+//            int idFromJson= response.getJSONObject("loc").getInt("id");
+//            pixGenerateQRCode(String.valueOf(idFromJson));
 
-
-
-            return response;
+            return response.getString("pixCopiaECola");
         }catch (EfiPayException e){
             System.out.println(e.getError());
             System.out.println(e.getErrorDescription());
