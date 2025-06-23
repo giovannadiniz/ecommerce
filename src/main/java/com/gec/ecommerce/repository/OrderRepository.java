@@ -1,6 +1,7 @@
 package com.gec.ecommerce.repository;
 
 import com.gec.ecommerce.bases.BaseRepository;
+import com.gec.ecommerce.domain.Cart;
 import com.gec.ecommerce.domain.Order;
 import com.gec.ecommerce.domain.User;
 import org.springframework.data.jpa.repository.Query;
@@ -21,4 +22,8 @@ public interface OrderRepository extends BaseRepository<Order> {
 
     @Query("SELECT o FROM Order o WHERE o.user.id = :userId ORDER BY o.createdAt DESC")
     List<Order> findByUserIdOrderByDataCriacaoDesc(@Param("userId") Long userId);
+
+    Optional<Order> findByUserId(Long userId);
+
+    List<Order> findByUserIdOrderByCreatedAtDesc(Long userId);
 }

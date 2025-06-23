@@ -50,6 +50,7 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.POST, "/product/new").permitAll()
                         .requestMatchers(HttpMethod.GET, "/product").permitAll()
                         .requestMatchers(HttpMethod.POST, "/checkout/processar").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/checkout/meusPedidos").authenticated()
                         .requestMatchers(HttpMethod.POST, "/api/v1/pix").permitAll()
                         .requestMatchers(HttpMethod.POST, "/v2/cob").authenticated()
                         .anyRequest().authenticated()
