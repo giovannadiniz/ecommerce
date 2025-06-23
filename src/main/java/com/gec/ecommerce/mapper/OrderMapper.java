@@ -17,6 +17,7 @@ import org.springframework.stereotype.Component;
 @Mapper(componentModel = "spring")
 public abstract class OrderMapper extends BaseMapper<Order, OrderFilter, OrderShallowDto, OrderRequest, OrderResponse> {
 
+    @Mapping(source = "id", target = "orderId")
     @Mapping(source = "user.id", target = "userId")
     @Mapping(source = "product.id", target = "productId")
     @Override
