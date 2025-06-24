@@ -19,10 +19,29 @@ public abstract class OrderMapper extends BaseMapper<Order, OrderFilter, OrderSh
 
     @Mapping(source = "id", target = "orderId")
     @Mapping(source = "user.id", target = "userId")
-    @Mapping(source = "product.id", target = "productId")
+    @Mapping(source = "product", target = "productId")
     @Override
     public abstract OrderResponse entityToResponse(Order entity);
 
+    public Product mapProduct(Product product) {
+        if (product == null) return null;
+
+        Product productResponse = new Product();
+        productResponse.setId(product.getId());
+        productResponse.setName(product.getName());
+        productResponse.setDescription(product.getDescription());
+        productResponse.setPrice(product.getPrice());
+        productResponse.setQuantity(product.getQuantity());
+        return productResponse;
+    }
+
+    // Método para mapear apenas ID para Product (usado em requests)
+    public static Product mapIdToProduct(Long id) {
+        if (id == null) return null;
+        Product product = new Product();
+        product.setId(id);
+        return product;
+    }
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "user", ignore = true)

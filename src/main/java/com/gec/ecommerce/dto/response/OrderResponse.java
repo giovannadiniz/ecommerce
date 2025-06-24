@@ -1,11 +1,13 @@
 package com.gec.ecommerce.dto.response;
 
+import com.gec.ecommerce.domain.Product;
+
 import java.math.BigDecimal;
 
 public class OrderResponse {
     private Long orderId;
     private Long userId;
-    private Long productId;
+    private Product productId;
     private Integer quantity;
     private java.math.BigDecimal total;
     private String qrCode;
@@ -14,7 +16,7 @@ public class OrderResponse {
 
     public OrderResponse() {}
 
-    public OrderResponse(Long orderId, Long userId, Long productId, Integer quantity, java.math.BigDecimal total, String qrCode, String qrCodeImage, String status) {
+    public OrderResponse(Long orderId, Long userId, Product productId, Integer quantity, java.math.BigDecimal total, String qrCode, String qrCodeImage, String status) {
         this.orderId = orderId;
         this.userId = userId;
         this.productId = productId;
@@ -41,11 +43,11 @@ public class OrderResponse {
         this.userId = userId;
     }
 
-    public Long getProductId() {
+    public Product getProductId() {
         return productId;
     }
 
-    public void setProductId(Long productId) {
+    public void setProductId(Product productId) {
         this.productId = productId;
     }
 
