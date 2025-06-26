@@ -54,14 +54,10 @@ public class SecurityFilter extends OncePerRequestFilter {
         return null;
     }
 
-    /**
-     * Determina se o filtro deve ser aplicado para esta requisição
-     */
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
         String path = request.getRequestURI();
 
-        // Não aplica o filtro para endpoints de autenticação
         return path.startsWith("/auth/") ||
                 path.equals("/auth/login") ||
                 path.equals("/auth/register");

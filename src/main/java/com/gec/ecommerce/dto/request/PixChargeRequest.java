@@ -1,4 +1,11 @@
 package com.gec.ecommerce.dto.request;
 
-public record PixChargeRequest(String chave, String valor) {
+import jakarta.validation.constraints.NotBlank;
+
+public record PixChargeRequest(
+        @NotBlank
+        String chave,
+
+        @NotBlank
+        String valor) {
 }

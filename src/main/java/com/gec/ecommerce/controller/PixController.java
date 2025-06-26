@@ -15,15 +15,6 @@ public class PixController {
     @Autowired
     private PixService pixService;
 
-//    @GetMapping
-//    public ResponseEntity pixCreateEVP(){
-//
-//        JSONObject response = this.pixService.pixCreateEVP();
-//        return ResponseEntity.ok()
-//                .contentType(MediaType.APPLICATION_JSON)
-//                .body(response.toString());
-//    }
-
     @GetMapping
     public ResponseEntity listarEVPs(){
 
@@ -33,12 +24,4 @@ public class PixController {
                 .body(response.toString());
     }
 
-//    @PostMapping
-//    public ResponseEntity pixCreateCharge(@RequestBody PixChargeRequest pixChargeRequest){
-//        JSONObject response = this.pixService.pixCreateCharge(pixChargeRequest);
-//
-//        return ResponseEntity.ok()
-//                .contentType(MediaType.APPLICATION_JSON)
-//                .body(response.toString());
-//    }
 }

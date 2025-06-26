@@ -35,7 +35,6 @@ public abstract class OrderMapper extends BaseMapper<Order, OrderFilter, OrderSh
         return productResponse;
     }
 
-    // Método para mapear apenas ID para Product (usado em requests)
     public static Product mapIdToProduct(Long id) {
         if (id == null) return null;
         Product product = new Product();

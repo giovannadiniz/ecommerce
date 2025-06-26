@@ -11,10 +11,8 @@ public class CartResponse {
     private Integer quantity;
     private BigDecimal total;
 
-    // Construtor padrão
     public CartResponse() {}
 
-    // Construtor completo
     public CartResponse(Long id, Long userId, Long productId, String productName,
                         BigDecimal productPrice, Integer quantity, BigDecimal total) {
         this.id = id;
@@ -34,7 +32,6 @@ public class CartResponse {
         this.productName = productName;
     }
 
-    // Getters e Setters
     public Long getId() {
         return id;
     }

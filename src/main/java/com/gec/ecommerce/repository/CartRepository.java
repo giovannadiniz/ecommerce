@@ -11,6 +11,4 @@ import java.util.Optional;
 public interface CartRepository extends BaseRepository<Cart> {
 
     Optional<Cart> findByUserId(Long userId);
-    void deleteByUserId(Long userId);// Adicione este método
-    Optional<Cart> findByUser(User user);
 }

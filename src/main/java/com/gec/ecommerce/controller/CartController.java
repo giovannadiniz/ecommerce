@@ -113,9 +113,6 @@ public class CartController extends BaseController<Cart, CartFilter, CartShallow
         }
     }
 
-    /**
-     * Obtém o carrinho do usuário autenticado
-     */
     @GetMapping("/my-cart")
     public ResponseEntity<CartResponse> getMyCart() {
         try {
@@ -133,9 +130,6 @@ public class CartController extends BaseController<Cart, CartFilter, CartShallow
         }
     }
 
-    /**
-     * Atualiza a quantidade de um produto no carrinho do usuário autenticado
-     */
     @PutMapping("/update-quantity")
     public ResponseEntity<CartResponse> updateQuantity(@Valid @RequestBody AddToCartRequest request) throws ServiceException {
         try {
@@ -157,9 +151,6 @@ public class CartController extends BaseController<Cart, CartFilter, CartShallow
         }
     }
 
-    /**
-     * Remove o carrinho do usuário autenticado
-     */
     @DeleteMapping("/clear")
     public ResponseEntity<String> clearMyCart() {
         try {
@@ -172,9 +163,6 @@ public class CartController extends BaseController<Cart, CartFilter, CartShallow
         }
     }
 
-    /**
-     * Remove completamente o carrinho do usuário autenticado
-     */
     @DeleteMapping("/remove")
     public ResponseEntity<String> removeMyCart() {
         try {
@@ -187,9 +175,6 @@ public class CartController extends BaseController<Cart, CartFilter, CartShallow
         }
     }
 
-    /**
-     * Método auxiliar para obter o usuário autenticado do contexto de segurança
-     */
     private User getAuthenticatedUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
@@ -206,9 +191,6 @@ public class CartController extends BaseController<Cart, CartFilter, CartShallow
         return (User) principal;
     }
 
-    /**
-     * Método alternativo para extrair usuário do token no header (caso necessário)
-     */
     private User getUserFromToken(HttpServletRequest request) {
         String authHeader = request.getHeader("Authorization");
 
@@ -222,11 +204,6 @@ public class CartController extends BaseController<Cart, CartFilter, CartShallow
         if (username == null) {
             throw new RuntimeException("Invalid token");
         }
-
-        // Aqui você precisaria buscar o usuário pelo username
-        // Este é um exemplo - você deve implementar conforme sua lógica
-        // User user = userService.findByUsername(username);
-        // return user;
 
         throw new RuntimeException("Method not fully implemented - use getAuthenticatedUser() instead");
     }

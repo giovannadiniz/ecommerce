@@ -78,19 +78,16 @@ public class CartService extends BaseService<Cart, CartFilter> {
         Product product = productService.findById(request.productId())
                 .orElseThrow(() -> new RuntimeException("Product not found"));
 
-        // Busca carrinho existente do usuário
         Optional<Cart> existingCart = cartRepository.findByUserId(request.userId());
 
         Cart cart;
         if (existingCart.isPresent()) {
-            // Atualiza carrinho existente
             cart = existingCart.get();
             cart.setProductName(product.getName());
             cart.setProduct(product);
             cart.setQuantity(request.quantity() != null ? request.quantity() : 1);
             logger.info("Updating existing cart for user: " + request.userId());
         } else {
-            // Cria novo carrinho
             cart = new Cart();
             cart.setUser(user);
             cart.setProduct(product);
@@ -100,20 +97,14 @@ public class CartService extends BaseService<Cart, CartFilter> {
         }
 
         cart.calculateTotal();
-        return saveWithReturn(cart); // Usando método da BaseService
+        return saveWithReturn(cart);
     }
 
-    /**
-     * Método para compatibilidade com código existente
-     */
     @Transactional
     public Cart createCart(CartRequest request) {
         return createOrUpdateCart(request);
     }
 
-    /**
-     * Lista todos os carrinhos com paginação
-     */
     public BasePaginatedResponse<CartShallowDto> listAll(Integer page, Integer size, CartFilter cartFilter, HttpServletRequest request) {
         logger.info("Listing carts - page: " + page + ", size: " + size);
         UriComponentsBuilder uri = UriComponentsBuilder.fromPath(request.getServletPath()).query(request.getQueryString());
@@ -121,18 +112,12 @@ public class CartService extends BaseService<Cart, CartFilter> {
         return new BasePaginatedResponse<>(cartPage.map(cartMapper::entityToShallowDto), uri);
     }
 
-    /**
-     * Busca carrinho por ID e retorna CartResponse
-     */
     public CartResponse findCartById(Long id) {
         logger.info("Finding cart by ID: " + id);
         Cart cart = findById(id).orElseThrow(() -> new RuntimeException("Cart not found"));
         return cartMapper.entityToResponse(cart);
     }
 
-    /**
-     * Busca carrinho por usuário
-     */
     public CartResponse findCartByUserId(Long userId) {
         logger.info("Finding cart by user ID: " + userId);
         Cart cart = cartRepository.findByUserId(userId)
@@ -140,26 +125,17 @@ public class CartService extends BaseService<Cart, CartFilter> {
         return cartMapper.entityToResponse(cart);
     }
 
-    /**
-     * Verifica se usuário tem carrinho
-     */
     public boolean hasCart(Long userId) {
         logger.info("Checking if user has cart: " + userId);
         return cartRepository.findByUserId(userId).isPresent();
     }
 
-    /**
-     * Busca carrinho por usuário (retorna Optional)
-     */
     public Optional<CartResponse> findCartByUserIdOptional(Long userId) {
         logger.info("Finding cart by user ID (optional): " + userId);
         return cartRepository.findByUserId(userId)
                 .map(cartMapper::entityToResponse);
     }
 
-    /**
-     * Atualiza carrinho existente
-     */
     @Transactional
     public CartResponse updateCart(Long id, CartRequest request) {
 
@@ -178,19 +154,13 @@ public class CartService extends BaseService<Cart, CartFilter> {
         return cartMapper.entityToResponse(updatedCart);
     }
 
-    /**
-     * Remove carrinho por usuário
-     */
     @Transactional
     public void deleteByUserId(Long userId) {
         logger.info("Deleting cart by user ID: " + userId);
         cartRepository.findByUserId(userId)
-                .ifPresent(cart -> super.delete(cart.getId())); // Usando método da BaseService
+                .ifPresent(cart -> super.delete(cart.getId())); 
     }
 
-    /**
-     * Limpa carrinho (remove produto mas mantém carrinho)
-     */
     @Transactional
     public void clearCart(Long userId) {
         logger.info("Clearing cart for user: " + userId);
@@ -199,21 +169,7 @@ public class CartService extends BaseService<Cart, CartFilter> {
                     cart.setProduct(null);
                     cart.setQuantity(0);
                     cart.setTotal(java.math.BigDecimal.ZERO);
-                    saveWithReturn(cart); // Usando método da BaseService
+                    saveWithReturn(cart);
                 });
-    }
-
-    /**
-     * Método para contar total de carrinhos
-     */
-    public long countCarts() {
-        return cartRepository.count();
-    }
-
-    /**
-     * Método para contar carrinhos por usuário
-     */
-    public long countCartsByUserId(Long userId) {
-        return cartRepository.findByUserId(userId).isPresent() ? 1 : 0;
     }
 }

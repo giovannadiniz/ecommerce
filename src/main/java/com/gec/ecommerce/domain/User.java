@@ -48,13 +48,8 @@ public class User implements UserDetails {
         createdAt = LocalDateTime.now();
     }
 
-    // Relacionamento um-para-um com Cart
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private Cart cart;
-//
-//    // Relacionamento um-para-muitos com Orders
-//    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-//    private List<Order> orders = new ArrayList<>();
 
     public User(){
 

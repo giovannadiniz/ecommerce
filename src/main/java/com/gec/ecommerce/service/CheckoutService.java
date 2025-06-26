@@ -59,33 +59,10 @@ public class CheckoutService extends BaseService<Order, OrderFilter> {
             order = orderRepository.save(order);
 
 
-            /*
-            Atualizar pedido com dados do PIX
-            order.setTxid(pixResponse.getTxid());
-            order.setQrCode(pixResponse.getQrCode());
-            order.setQrCodeImage(pixResponse.getQrCodeImage());
-            */
-
             cartService.delete(request.idCart());
 
             return order;
     }
-
-//    public List<OrderResponse> pesquisarOrders() {
-//        List<Order> orders = orderRepository.findAll();
-//        return orders.stream()
-//                .map(order -> new OrderResponse(
-//                        order.getId(),
-//                        order.getUser().getId(),
-//                        order.getProduct().getId(),
-//                        order.getQuantity(),
-//                        order.getTotal(),
-//                        order.getQrCode(),
-//                        order.getStatus(),
-//                        order.getProduct().getName()
-//                ))
-//                .collect(Collectors.toList());
-//    }
 
     public List<OrderResponse> findOrdersByUserId(Long userId) {
         logger.info("Finding all orders for user ID: " + userId);
@@ -114,10 +91,6 @@ public class CheckoutService extends BaseService<Order, OrderFilter> {
         order.setQrCode(pixResponse);
 
 
-        // TODO: Implementar parsing do pixResponse para extrair dados específicos
-        // order.setTxid(pixData.getTxid());
-        // order.setQrCodeImage(pixData.getQrCodeImage());
-
         return order;
     }
 
@@ -131,49 +104,4 @@ public class CheckoutService extends BaseService<Order, OrderFilter> {
         return null;
     }
 }
-
-//    public CheckoutResponse verificarStatusPagamento(Long orderId) {
-//        try {
-//            Optional<Order> orderOpt = orderRepository.findById(orderId);
-//            if (!orderOpt.isPresent()) {
-//                throw new RuntimeException("Pedido não encontrado");
-//            }
-//
-//            Order order = orderOpt.get();
-//
-//            // Se já está pago, retorna sem verificar novamente
-//            if ("PAGO".equals(order.getStatus())) {
-//                return criarCheckoutResponse(order);
-//            }
-
-            // Verificar status no EFI
-//            String statusEFI = pixService.verificarStatusPagamento(order.getTxid());
-
-            // Atualizar status se necessário
-//            if ("CONCLUIDA".equals(statusEFI) && !"PAGO".equals(order.getStatus())) {
-//                order.setStatus("PAGO");
-//                order.setPaymentDate(LocalDateTime.now());
-//                orderRepository.save(order);
-//            }
-//
-//            return criarCheckoutResponse(order);
-//
-//        } catch (Exception e) {
-//            System.err.println("Erro ao verificar status do pagamento: " + e.getMessage());
-//            throw new RuntimeException("Erro ao verificar status do pagamento", e);
-//        }
-//    }
-
-//    private CheckoutResponse criarCheckoutResponse(Order order) {
-//        return new CheckoutResponse(
-//                order.getId(),
-//                order.getProductName(),
-//                order.getQuantity(),
-//                order.getTotal(),
-//                order.getQrCode(),
-//                order.getQrCodeImage(),
-//                order.getStatus()
-//        );
-//    }
-//
 

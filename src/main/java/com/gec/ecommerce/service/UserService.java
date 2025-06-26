@@ -41,12 +41,11 @@ public class UserService extends BaseService <User, UserFilter> {
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
-//    private final PasswordEncoder passwordEncoder;
+
 
     public UserService(UserRepository userRepository, UserMapper userMapper) {
         this.userRepository = userRepository;
         this.userMapper = userMapper;
-//        this.passwordEncoder = passwordEncoder;
     }
 
 
@@ -60,7 +59,6 @@ public class UserService extends BaseService <User, UserFilter> {
     @Transactional
     @Override
     public User saveWithReturn(User user) {
-//        user.setPassword(passwordEncoder.encode(user.getPassword()));
         return getRepository().save(user);
     }
 

@@ -7,11 +7,11 @@ import java.math.BigDecimal;
 
 public record CartItemRequest(
         @NotNull(message = "O ID do produto é obrigatório")
-        Long productId, // ID do produto a ser adicionado
+        Long productId,
 
         @NotNull(message = "A quantidade é obrigatória")
         @Positive(message = "A quantidade deve ser maior que zero")
         Integer quantity,
 
-        BigDecimal subtotal)// Quantidade desejada)
+        BigDecimal subtotal)
          {}

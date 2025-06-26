@@ -49,15 +49,10 @@ public class CouponController extends BaseController<Coupon, CouponFilter, Coupo
     }
 
     @Override
-    public ResponseEntity<CouponResponse> createNew(CouponRequest couponRequest) throws ServiceException {
-        return null;
+    public ResponseEntity<CouponResponse> createNew(@Valid @RequestBody CouponRequest couponRequest) {
+        Coupon coupon = couponService.saveWithReturn(couponMapper.requestToEntity(couponRequest));
+        return ResponseEntity.ok().body(couponMapper.entityToResponse(coupon));
     }
-
-//    @Override
-//    public ResponseEntity<CouponResponse> createNew(@Valid @RequestBody CouponRequest couponRequest) {
-//        Coupon coupon = couponService.saveWithReturn(couponMapper.requestToEntity(couponRequest));
-//        return ResponseEntity.ok().body(couponMapper.entityToResponse(coupon));
-//    }
 
     @Override
     public ResponseEntity<CouponResponse> update(@Valid @RequestBody CouponRequest couponRequest, Long id) {
